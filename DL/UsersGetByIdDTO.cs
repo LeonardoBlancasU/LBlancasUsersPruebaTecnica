@@ -16,7 +16,7 @@ namespace DL
         public string Password { get; set; }
         public string Email { get; set; }
         public byte[]? Imagen { get; set; }
-        public int IdRol { get; set; }
+        public byte IdRol { get; set; }
         public string NombreRol { get; set; }
     }
 }

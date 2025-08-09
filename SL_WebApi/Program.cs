@@ -46,7 +46,8 @@ builder.Services.AddSession(options =>
 
 var conString = builder.Configuration.GetConnectionString("LBlancasUsers");
 builder.Services.AddDbContext<LblancasUsersPruebaTecnicaContext>(options => options.UseSqlServer(conString));
-
+builder.Services.AddScoped<BL.Users>();
+builder.Services.AddScoped<BL.Rol>();
 
 
 

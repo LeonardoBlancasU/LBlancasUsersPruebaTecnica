@@ -1,0 +1,55 @@
+﻿@model ML.Users
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container">
+    @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+    {
+        <div class="row">
+            <div class="align-content-center d-flex justify-content-center align-items-center">
+                <h3>Iniciar Sesion</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row">
+                <div class="align-content-center d-flex justify-content-center align-items-center">
+                    @Html.LabelFor(model => model.Email, new { @class = "form-label" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="align-content-center d-flex justify-content-center align-items-center">
+                <div class="col-6">
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @onkeypress="DesactivarEnter(event)"})
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row">
+                <div class="align-content-center d-flex justify-content-center align-items-center">
+                    @Html.LabelFor(model => model.Password, new { @class = "form-label" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="align-content-center d-flex justify-content-center align-items-center">
+                <div class="col-6">
+                    @Html.TextBoxFor(model => model.Password, new { @class = "form-control", type = "password", @onkeypress="DesactivarEnter(event)"})
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center align-items-center">
+                <div class="col-6 text-center">
+                    <input type="submit" value="Iniciar Sesion" class="btn btn-success w-100" id="btnLogin" onclick="ValidarCampos()" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js">
+</script>
+<script src="~/js/Login/Validaciones.js"></script>

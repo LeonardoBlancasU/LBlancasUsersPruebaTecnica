@@ -68,7 +68,7 @@ namespace BL
                 var fechaNacimiento = new SqlParameter("@FechaNacimiento", DateTime.Parse(user.FechaNacimiento).ToString("dd-MM-yyyy"));
                 var imagen = new SqlParameter("@Imagen", user.Imagen);
                 var idRol = new SqlParameter("@IdRol", user.Rol.IdRol);
-                var query = _context.Database.ExecuteSqlRaw("UserAdd, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Imagen, @IdRol", nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, imagen, idRol);
+                var query = _context.Database.ExecuteSqlRaw("UserAdd @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Imagen, @IdRol", nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, imagen, idRol);
                 if(query > 0)
                 {
                     result.Correct =true;
@@ -99,7 +99,7 @@ namespace BL
                 var fechaNacimiento = new SqlParameter("@FechaNacimiento", DateTime.Parse(user.FechaNacimiento).ToString("dd-MM-yyyy"));
                 var imagen = new SqlParameter("@Imagen", user.Imagen);
                 var idRol = new SqlParameter("@IdRol", user.Rol.IdRol);
-                var query = _context.Database.ExecuteSqlRaw("UserUpdate, @IdUser, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Imagen, @IdRol", idUser, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, imagen, idRol);
+                var query = _context.Database.ExecuteSqlRaw("UserUpdate @IdUser, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Imagen, @IdRol", idUser, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, imagen, idRol);
                 if (query > 0)
                 {
                     result.Correct = true;
@@ -124,7 +124,7 @@ namespace BL
             try
             {
                 var idUser = new SqlParameter("@IdUser", IdUser);
-                var query = _context.Database.ExecuteSqlRaw("UserDelete, @IdUser", idUser);
+                var query = _context.Database.ExecuteSqlRaw("UserDelete @IdUser", idUser);
                 if (query > 0)
                 {
                     result.Correct = true;
@@ -149,7 +149,7 @@ namespace BL
             try
             {
                 var idUser = new SqlParameter("@IdUser", IdUser);
-                var query = _context.UsersGetByIdDTO.FromSqlRaw("UserGetById, @IdUser", idUser).AsEnumerable().SingleOrDefault();
+                var query = _context.UsersGetByIdDTO.FromSqlRaw("UsersGetById @IdUser", idUser).AsEnumerable().SingleOrDefault();
                 if (query != null)
                 {
                     ML.Users user = new ML.Users();
@@ -162,12 +162,84 @@ namespace BL
                     user.Imagen = query.Imagen;
                     user.Rol = new ML.Rol();
                     user.Rol.IdRol = query.IdRol;
+                    user.Rol.Nombre = query.NombreRol;
+                    result.Object = user;
                     result.Correct = true;
                 }
                 else
                 {
                     result.Correct = false;
                     result.ErrorMessage = "No se pudo Agregar el User";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+        public ML.Result Login(ML.Login login)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var email = new SqlParameter("@Email", login.Email);
+
+                var query = _context.LoginDTO.FromSqlRaw("LoginEmailAndPassword @Email", email).AsEnumerable().SingleOrDefault();
+                if (query != null)
+                {
+                    if(query.Email == login.Email && query.Password == login.Password)
+                    {
+                        result.Correct = true;
+                        result.Object = query.IdUser;
+                    }
+                    else
+                    {
+                        result.Correct = false;
+                        result.ErrorMessage = "Password incorrecta";
+                    }
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "Email no registrado";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+        public ML.Result GetEmailUnique( string Email)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var email = new SqlParameter("@Email", Email);
+
+                var query = _context.Users.FromSqlRaw("EmailGetUnique @Email", email).AsEnumerable().SingleOrDefault();
+                if (query != null)
+                {
+                    if (query != null)
+                    {
+                        result.Correct = true;
+                        result.Object = query.IdUser;
+                    }
+                    else
+                    {
+                        result.Correct = false;
+                        result.ErrorMessage = "Password incorrecta";
+                    }
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "Email no registrado";
                 }
             }
             catch (Exception ex)

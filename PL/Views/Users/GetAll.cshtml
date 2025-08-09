@@ -1,0 +1,111 @@
+﻿@model ML.Users
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string rol = Context.Session.GetString("Rol") ?? "";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Lista de Usuarios Registrados</h2>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Consultar, Agregar, Editar o Eliminar Usuarios Registrados en la Base</h5>
+            <hr />
+        </div>
+    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-all"> @TempData["Success"] </i>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-x-square"> @TempData["Error"] </i>
+
+        </div>
+    }
+    @if (TempData["Agregado"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-floppy"> @TempData["Agregado"] </i>
+
+        </div>
+    }
+    <div class="row">
+        @if (rol != "" && rol == "Administrador")
+        {
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.ActionLink("+", "Formulario", "Users", new { @class = "btn btn-success" })
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-12">
+                @if (Model.Usuarios != null)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <td> Editar </td>
+                                    <td> Nombre </td>
+                                    <td> Fecha de Nacimiento </td>
+                                    <td> Rol </td>
+                                    <td> Eliminar </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (ML.Users user in Model.Usuarios)
+                                {
+                                    <tr>
+                                        <input type="hidden" name="IdUsuario" value="@user.IdUser" />
+                                        <td>
+                                            @if (rol != "" && rol == "Administrador")
+                                            {
+                                                @Html.ActionLink("Editar", "Formulario", "Users", new { IdUser = user.IdUser }, new { @class = "btn btn-warning" })
+                                            }
+                                        </td>
+                                        <td>@user.Nombre @user.ApellidoPaterno @user.ApellidoMaterno</td>
+                                        <td>@user.FechaNacimiento</td>
+                                        <td>
+                                            @if (user.Imagen != null)
+                                            {
+                                                <img id="imgUser" src="data:image/*;base64, @Convert.ToBase64String(user.Imagen)" width="50" height="50" />
+                                            }
+                                            else
+                                            {
+                                                <img id="imgUser" src="@Url.Content("~/Img/Default.png")"
+                                                     width="50" height="50" />
+                                            }
+                                        </td>
+                                        <td>@user.Rol.Nombre</td>
+                                        <td>
+                                            @if (rol != "" && rol == "Administrador")
+                                            {
+                                                <a href="@Url.Action("Delete", "Usuario", new { IdUser = user.IdUser })" onclick="return confirm('Estas seguro que quieres eliminar a este usuario?')">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-question-octagon">No se encontraron Usuarios!</i>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

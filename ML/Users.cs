@@ -48,5 +48,7 @@ namespace ML
         public byte[]? Imagen { get; set; }
 
         public ML.Rol Rol { get; set; }
+
+        public List<object> Usuarios { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PL.Controllers
 {
@@ -20,27 +21,83 @@ namespace PL.Controllers
         public IActionResult GetAll()
         {
             ML.Users users = new ML.Users();
-            ML.Result result = new ML.Result();
-            return View();
+            ML.Result result = GetAllREST();
+            if (result.Correct)
+            {
+                users.Usuarios = result.Objects ?? new List<object>();
+            }
+            return View(users);
         }
         [HttpGet]
         public IActionResult Formulario(int? IdUser)
         {
+            ML.Users user = new ML.Users();
+            user.Rol = new ML.Rol();
             ML.Result result = new ML.Result();
             if(IdUser != null && IdUser > 0)
             {
-
+                var respuesta = GetByIdREST(IdUser.Value);
+                if (respuesta.Correct)
+                {
+                    user = (ML.Users)respuesta.Object;
+                }
             }
-            else
-            {
-                
-            }
-            return View();
+            result = _BLRol.GetAll();
+            user.Rol.Roles = result.Correct ? result.Objects : new List<object>();
+            return View(user);  
         }
         [HttpPost]
         public IActionResult Formulario(ML.Users users, IFormFile ImagenFile)
         {
+            if (ModelState.IsValid)
+            {
+                ML.Result result = new ML.Result();
+                if (ImagenFile != null && ImagenFile.Length > 0)
+                {
+                    MemoryStream target = new MemoryStream();
+                    ImagenFile.CopyTo(target);
+                    byte[] data = target.ToArray();
+                    users.Imagen = data;
+                }
+                else
+                {
+                    // Si no se selecciona una imagen, puedes asignar una imagen predeterminada
+                    string defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Img", "Default.png");
+                    byte[] defaultImageData = System.IO.File.ReadAllBytes(defaultImagePath);
+                    users.Imagen = defaultImageData;
+                }
+                if(users.IdUser > 0) //Actualizar Usuario
+                {
+                    result = _BLUsers.GetEmailUnique(users.Email);
+                    if(result.Correct)
+                    {
 
+                    }
+                    var respuesta = UpdateREST(users);
+                    if (respuesta.Correct)
+                    {
+                        TempData["Agregado"] = "User actualizado correctamente.";
+                        return RedirectToAction("GetAll");
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Error al actualizar el user: " + result.ErrorMessage;
+                    }
+                }
+                else
+                {
+                    var respuesta = UpdateREST(users);
+                    if (respuesta.Correct)
+                    {
+                        TempData["Agregado"] = "User actualizado correctamente.";
+                        return RedirectToAction("GetAll");
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Error al actualizar el user: " + result.ErrorMessage;
+                    }
+                }
+            }
             return View(users);
         }
         [HttpDelete]
@@ -131,7 +188,7 @@ namespace PL.Controllers
         }
 
         [NonAction]
-        public ML.Result UpdateREST(int IdUser, ML.Users user)
+        public ML.Result UpdateREST(ML.Users user)
         {
             ML.Result result = new ML.Result();
             string url = _configuration["AppSettings:Url"] ?? "";
@@ -140,7 +197,7 @@ namespace PL.Controllers
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var postTask = client.PutAsJsonAsync<ML.Users>("Usuario/Actualizar/" + IdUser, user);
+                    var postTask = client.PutAsJsonAsync<ML.Users>("Users/Update", user);
                     postTask.Wait();
 
                     var request = postTask.Result;

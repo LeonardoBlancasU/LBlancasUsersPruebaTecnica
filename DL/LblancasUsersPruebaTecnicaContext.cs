@@ -28,7 +28,9 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersGetDTO> UsersGetDTO { get; set; }
+
     public virtual DbSet<UsersGetByIdDTO> UsersGetByIdDTO { get; set; }
+    public virtual DbSet<LoginDTO> LoginDTO { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -156,6 +158,10 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
         modelBuilder.Entity<UsersGetByIdDTO>(entity =>
             entity
                 .HasNoKey());
+
+        modelBuilder.Entity<LoginDTO>(entity =>
+           entity
+               .HasNoKey());
 
         OnModelCreatingPartial(modelBuilder);
     }

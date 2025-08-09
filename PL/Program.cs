@@ -20,9 +20,8 @@ builder.Services.AddSession(options =>
 
 var conString = builder.Configuration.GetConnectionString("LBlancasUsers");
 builder.Services.AddDbContext<LblancasUsersPruebaTecnicaContext>(options => options.UseSqlServer(conString));
-
-
-
+builder.Services.AddScoped<BL.Users>();
+builder.Services.AddScoped<BL.Rol>();
 
 
 
@@ -37,11 +36,12 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();
