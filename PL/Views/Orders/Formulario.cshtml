@@ -1,0 +1,94 @@
+﻿@model ML.Orders
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Usuario</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Ingrese los datos del usuario</h5>
+            <hr />
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Formulario", "Orders", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+    {
+        <div class="row">
+            <input type="hidden" name="IdOrder" value="@Model.IdOrder" />
+
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.Users.IdUser, new { @id = "ddlUser", @class = "form-label" })
+                <div class="input-group mb-3 has-validation" required>
+                    <span class="input-group-text bi bi-list" id="basic-addon1"></span>
+                    @Html.DropDownListFor(model => model.Users.IdUser,
+                             new SelectList(Model.User.Usuarios, "IdUser", "Nombre", "ApellidoPaterno", "ApellidoMaterno"),
+                             "-- Seleccione un User --",
+                             new { required = "required", @class = "form-control", @onkeypress = "DesactivarEnter(event)" })
+                </div>
+                @Html.ValidationMessageFor(model => model.Users.IdUser, "", new { @id = "lblErrorUser", @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.Trucks.IdTruck, new { @id = "ddlTruck", @class = "form-label" })
+                <div class="input-group mb-3 has-validation" required>
+                    <span class="input-group-text bi bi-list" id="basic-addon1"></span>
+                    @Html.DropDownListFor(model => model.Trucks.IdTruck,
+                             new SelectList(Model.Trucks.Camionetas, "IdTruck", "Year". "Color"),
+                             "-- Seleccione una Truck --",
+                             new { required = "required", @class = "form-control", @onkeypress = "DesactivarEnter(event)" })
+                </div>
+                @Html.ValidationMessageFor(model => model.Trucks.IdTruck, "", new { @id = "lblErrorTruck", @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.LocationPick.IdLocation, new { @id = "ddlPick", @class = "form-label" })
+                <div class="input-group mb-3 has-validation" required>
+                    <span class="input-group-text bi bi-list" id="basic-addon1"></span>
+                    @Html.DropDownListFor(model => model.LocationPick.IdLocation,
+                             new SelectList(Model.LocationPick.Locaciones, "IdLocation", "address", "place_id"),
+                             "-- Seleccione una Location --",
+                             new { required = "required", @class = "form-control", @onkeypress = "DesactivarEnter(event)" })
+                </div>
+                @Html.ValidationMessageFor(model => model.LocationPick.IdLocation, "", new { @id = "lblErrorPick", @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    @Html.LabelFor(model => model.LocationDrop.IdLocation, new { @id = "ddlDrop", @class = "form-label" })
+                    <div class="input-group mb-3 has-validation" required>
+                        <span class="input-group-text bi bi-list" id="basic-addon1"></span>
+                        @Html.DropDownListFor(model => model.LocationDrop.IdLocation,
+                                 new SelectList(Model.LocationDrop.Locaciones, "IdLocation", "address", "place_id"),
+                                 "-- Seleccione una Location --",
+                                 new { required = "required", @class = "form-control", @onkeypress = "DesactivarEnter(event)" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.LocationDrop.IdLocation, "", new { @id = "lblErrorRol", @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-12">
+                <input type="submit" value="Guardar" class="btn btn-success" id="btnGuardar" onclick="ValidarCampos()" />
+            </div>
+
+            <div class="col-12">
+                @Html.ActionLink("Regresar", "GetAll", "Usuario", new { @class = "btn btn-danger" })
+            </div>
+
+
+            @if (TempData["Actualizado"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="bi bi-send"> @TempData["Actualizado"]</i>
+                </div>
+            }
+
+        </div>
+        }
+
+</div>

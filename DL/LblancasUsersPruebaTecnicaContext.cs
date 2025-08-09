@@ -27,6 +27,12 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+
+
+
+
+
+    public virtual DbSet<GetAllOrdersDTO> GetAllOrdersDTO {  get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Location>(entity =>
@@ -145,6 +151,34 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Users__IdRol__2A4B4B5E");
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        modelBuilder.Entity<GetAllOrdersDTO>(entity =>
+            entity
+                .HasNoKey()
+        );
 
         OnModelCreatingPartial(modelBuilder);
     }
