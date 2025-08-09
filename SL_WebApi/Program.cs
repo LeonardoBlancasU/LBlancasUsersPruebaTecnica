@@ -50,6 +50,8 @@ builder.Services.AddScoped<BL.Users>();
 builder.Services.AddScoped<BL.Rol>();
 
 
+builder.Services.AddScoped<BL.Trucks>();
+
 
 
 
