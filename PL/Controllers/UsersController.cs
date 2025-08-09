@@ -1,5 +1,7 @@
 ﻿using Azure.Core;
+using DL;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace PL.Controllers
 {
@@ -47,7 +49,7 @@ namespace PL.Controllers
             return View(user);  
         }
         [HttpPost]
-        public IActionResult Formulario(ML.Users users, IFormFile ImagenFile)
+        public IActionResult Formulario(ML.Users users, IFormFile? ImagenFile)
         {
             if (ModelState.IsValid)
             {
@@ -59,7 +61,12 @@ namespace PL.Controllers
                     byte[] data = target.ToArray();
                     users.Imagen = data;
                 }
-                else
+                else if (ImagenFile == null && users.IdUser > 0)
+                {
+                    var resultImg = _BLUsers.GetImagenById(users.IdUser);
+                    users.Imagen = (byte[])resultImg.Object;
+                }
+                else 
                 {
                     // Si no se selecciona una imagen, puedes asignar una imagen predeterminada
                     string defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Img", "Default.png");
@@ -68,43 +75,81 @@ namespace PL.Controllers
                 }
                 if(users.IdUser > 0) //Actualizar Usuario
                 {
-                    result = _BLUsers.GetEmailUnique(users.Email);
+                    result = _BLUsers.GetEmailUnique(users.Email.ToLower());
                     if(result.Correct)
                     {
-
+                        if(users.IdUser == (int)result.Object)
+                        {
+                            var respuesta = UpdateREST(users);
+                            if (respuesta.Correct)
+                            {
+                                TempData["Agregado"] = "User actualizado correctamente.";
+                                return RedirectToAction("GetAll");
+                            }
+                            else
+                            {
+                                TempData["Error"] = "Error al actualizar el user: " + result.ErrorMessage;
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.EmailError = "El correo ya está registrado a otro User";
+                        }
                     }
-                    var respuesta = UpdateREST(users);
-                    if (respuesta.Correct)
+                    else //nuevo correo
                     {
-                        TempData["Agregado"] = "User actualizado correctamente.";
-                        return RedirectToAction("GetAll");
-                    }
-                    else
-                    {
-                        TempData["Error"] = "Error al actualizar el user: " + result.ErrorMessage;
+                        var respuesta = UpdateREST(users);
+                        if (respuesta.Correct)
+                        {
+                            TempData["Agregado"] = "User actualizado correctamente.";
+                            return RedirectToAction("GetAll");
+                        }
+                        else
+                        {
+                            TempData["Error"] = "Error al actualizar el user: " + result.ErrorMessage;
+                        }
                     }
                 }
                 else
                 {
-                    var respuesta = UpdateREST(users);
-                    if (respuesta.Correct)
+                    result = _BLUsers.GetEmailUnique(users.Email.ToLower());
+                    if (result.Correct)
                     {
-                        TempData["Agregado"] = "User actualizado correctamente.";
-                        return RedirectToAction("GetAll");
+                        ViewBag.EmailError = "El correo ya está registrado a otro User";
                     }
                     else
                     {
-                        TempData["Error"] = "Error al actualizar el user: " + result.ErrorMessage;
+                        var respuesta = AddREST(users);
+                        if (respuesta.Correct)
+                        {
+                            TempData["Agregado"] = "User agregado correctamente.";
+                            return RedirectToAction("GetAll");
+                        }
+                        else
+                        {
+                            TempData["Error"] = "Error al agregar el user: " + result.ErrorMessage;
+                        }
                     }
                 }
+                ML.Result resultRoles = _BLRol.GetAll();
+                users.Rol.Roles = resultRoles.Correct ? resultRoles.Objects : new List<object>();
             }
             return View(users);
         }
-        [HttpDelete]
+        
+        [HttpGet]
         public IActionResult Delete(int IdUser)
         {
-
-            return View();
+            var respuesta = DeleteREST(IdUser);
+            if (respuesta.Correct)
+            {
+                TempData["Success"] = "User Eliminado Correctamente.";
+            }
+            else
+            {
+                TempData["Error"] = " Error al eliminar user" + respuesta.ErrorMessage;
+            }
+            return RedirectToAction("GetAll");
         }
         [NonAction]
         public ML.Result GetAllREST()
@@ -161,7 +206,7 @@ namespace PL.Controllers
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                     //HTTP POST 
                     var postTask = client.PostAsJsonAsync<ML.Users>("Users/Add", user); //Serializar
                     postTask.Wait();
@@ -192,11 +237,13 @@ namespace PL.Controllers
         {
             ML.Result result = new ML.Result();
             string url = _configuration["AppSettings:Url"] ?? "";
+            string token = HttpContext.Session.GetString("TokenJWT") ?? "";
             try
             {
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                     var postTask = client.PutAsJsonAsync<ML.Users>("Users/Update", user);
                     postTask.Wait();
 
@@ -262,12 +309,14 @@ namespace PL.Controllers
         {
             ML.Result result = new ML.Result();
             string url = _configuration["AppSettings:Url"] ?? "";
+            string token = HttpContext.Session.GetString("TokenJWT") ?? "";
             try
             {
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var responseTask = client.GetAsync("Users/GetById?IdUsuario=" + IdUser);
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var responseTask = client.GetAsync("Users/GetById?IdUser=" + IdUser);
                     responseTask.Wait();
                     var request = responseTask.Result;
                     if (request.IsSuccessStatusCode)

@@ -65,10 +65,12 @@ namespace BL
                 var nombre = new SqlParameter("@Nombre", user.Nombre);
                 var apellidoPaterno = new SqlParameter("@ApellidoPaterno", user.ApellidoPaterno);
                 var apellidoMaterno = new SqlParameter("@ApellidoMaterno", user.ApellidoMaterno);
+                var email = new SqlParameter("email", user.Email.ToLower());
+                var password = new SqlParameter("password", user.Password);
                 var fechaNacimiento = new SqlParameter("@FechaNacimiento", DateTime.Parse(user.FechaNacimiento).ToString("dd-MM-yyyy"));
-                var imagen = new SqlParameter("@Imagen", user.Imagen);
+                var Imagen = new SqlParameter("@Imagen", user.Imagen);
                 var idRol = new SqlParameter("@IdRol", user.Rol.IdRol);
-                var query = _context.Database.ExecuteSqlRaw("UserAdd @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Imagen, @IdRol", nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, imagen, idRol);
+                var query = _context.Database.ExecuteSqlRaw("UsersAdd @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Email, @Password, @Imagen, @IdRol", nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, email, password, Imagen, idRol);
                 if(query > 0)
                 {
                     result.Correct =true;
@@ -96,10 +98,12 @@ namespace BL
                 var nombre = new SqlParameter("@Nombre", user.Nombre);
                 var apellidoPaterno = new SqlParameter("@ApellidoPaterno", user.ApellidoPaterno);
                 var apellidoMaterno = new SqlParameter("@ApellidoMaterno", user.ApellidoMaterno);
+                var email = new SqlParameter("email", user.Email.ToLower());
+                var password = new SqlParameter("password", user.Password);
                 var fechaNacimiento = new SqlParameter("@FechaNacimiento", DateTime.Parse(user.FechaNacimiento).ToString("dd-MM-yyyy"));
                 var imagen = new SqlParameter("@Imagen", user.Imagen);
                 var idRol = new SqlParameter("@IdRol", user.Rol.IdRol);
-                var query = _context.Database.ExecuteSqlRaw("UserUpdate @IdUser, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Imagen, @IdRol", idUser, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, imagen, idRol);
+                var query = _context.Database.ExecuteSqlRaw("UsersUpdate @IdUser, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Email, @Password, @Imagen, @IdRol", idUser, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, email, password, imagen, idRol);
                 if (query > 0)
                 {
                     result.Correct = true;
@@ -124,7 +128,7 @@ namespace BL
             try
             {
                 var idUser = new SqlParameter("@IdUser", IdUser);
-                var query = _context.Database.ExecuteSqlRaw("UserDelete @IdUser", idUser);
+                var query = _context.Database.ExecuteSqlRaw("UsersDelete @IdUser", idUser);
                 if (query > 0)
                 {
                     result.Correct = true;
@@ -156,6 +160,7 @@ namespace BL
                     user.IdUser = query.IdUser;
                     user.Nombre = query.Nombre;
                     user.ApellidoPaterno = query.ApellidoPaterno;
+                    user.ApellidoMaterno = query.ApellidoMaterno;
                     user.Email = query.Email;
                     user.Password = query.Password;
                     user.FechaNacimiento = DateTime.ParseExact(query.FechaNacimiento, "dd-MM-yyyy", null).ToString("yyyy-MM-dd");
@@ -185,12 +190,12 @@ namespace BL
             ML.Result result = new ML.Result();
             try
             {
-                var email = new SqlParameter("@Email", login.Email);
+                var email = new SqlParameter("@Email", login.Email.ToLower());
 
                 var query = _context.LoginDTO.FromSqlRaw("LoginEmailAndPassword @Email", email).AsEnumerable().SingleOrDefault();
                 if (query != null)
                 {
-                    if(query.Email == login.Email && query.Password == login.Password)
+                    if(query.Email == login.Email.ToLower() && query.Password == login.Password)
                     {
                         result.Correct = true;
                         result.Object = query.IdUser;
@@ -222,24 +227,43 @@ namespace BL
             {
                 var email = new SqlParameter("@Email", Email);
 
-                var query = _context.Users.FromSqlRaw("EmailGetUnique @Email", email).AsEnumerable().SingleOrDefault();
+                var query = _context.GetEmailUniqueDTO.FromSqlRaw("EmailGetUnique @Email", email).AsEnumerable().SingleOrDefault();
+
                 if (query != null)
                 {
-                    if (query != null)
-                    {
-                        result.Correct = true;
-                        result.Object = query.IdUser;
-                    }
-                    else
-                    {
-                        result.Correct = false;
-                        result.ErrorMessage = "Password incorrecta";
-                    }
+                    result.Correct = true;
+                    result.Object = query.IdUser;
                 }
-                else
+                else //Email no registrado en la BD
                 {
                     result.Correct = false;
-                    result.ErrorMessage = "Email no registrado";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
+        public ML.Result GetImagenById(int IdUser)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var idUser = new SqlParameter("@IdUser", IdUser);
+
+                var query = _context.GetImagenDTO.FromSqlRaw("GetImagenById @IdUser", idUser).AsEnumerable().SingleOrDefault();
+                if (query != null)
+                {
+                    result.Correct = true;
+                    result.Object = query.Imagen;
+                }
+                else //No hay imagen para el Usuario
+                {
+                    result.Correct = false;
                 }
             }
             catch (Exception ex)

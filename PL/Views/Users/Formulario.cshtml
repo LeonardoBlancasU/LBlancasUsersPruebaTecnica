@@ -19,7 +19,7 @@
     @using (Html.BeginForm("Formulario", "Users", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
     {
         <div class="row">
-            <input type="hidden" name="IdUsuario" value="@Model.IdUser" />
+            <input type="hidden" name="IdUser" value="@Model.IdUser" />
             <div class="col-12 col-md-6 col-lg-4 mb-3">
                 @Html.LabelFor(model => model.Nombre, new { @class = "form-label", @for = "txtNombre" })
                 <div class="input-group mb-3 has-validation">

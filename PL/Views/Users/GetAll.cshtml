@@ -88,7 +88,7 @@
                                         <td>
                                             @if (rol != "" && rol == "Administrador")
                                             {
-                                                <a href="@Url.Action("Delete", "Usuario", new { IdUser = user.IdUser })" onclick="return confirm('Estas seguro que quieres eliminar a este usuario?')">
+                                                <a href="@Url.Action("Delete", "Users", new { IdUser = user.IdUser })" onclick="return confirm('Estas seguro que quieres eliminar a este usuario?')">
                                                     <i class="bi bi-trash-fill"></i>
                                                 </a>
                                             }

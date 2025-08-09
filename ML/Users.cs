@@ -49,6 +49,6 @@ namespace ML
 
         public ML.Rol Rol { get; set; }
 
-        public List<object> Usuarios { get; set; }
+        public List<object>? Usuarios { get; set; }
     }
 }

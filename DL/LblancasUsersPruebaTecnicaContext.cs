@@ -31,6 +31,8 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
 
     public virtual DbSet<UsersGetByIdDTO> UsersGetByIdDTO { get; set; }
     public virtual DbSet<LoginDTO> LoginDTO { get; set; }
+    public virtual DbSet<GetImagenDTO> GetImagenDTO { get; set; }
+    public virtual DbSet<GetEmailUniqueDTO> GetEmailUniqueDTO { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -160,6 +162,14 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
                 .HasNoKey());
 
         modelBuilder.Entity<LoginDTO>(entity =>
+           entity
+               .HasNoKey());
+        
+        modelBuilder.Entity<GetImagenDTO>(entity =>
+           entity
+               .HasNoKey());
+
+        modelBuilder.Entity<GetEmailUniqueDTO>(entity =>
            entity
                .HasNoKey());
 

@@ -69,7 +69,8 @@ function ConfirmarTextbox(inputId, TextBoxId, labelId) {
         $("#" + labelId).text("");
         $("#" + TextBoxId).css({ 'border': '3px solid green', 'color': 'green' });
         return true;
-
+    }
+}
 function ValidarPassword(inputId, labelId, TextboxId, long) {
     var input = $("#" + inputId).val();
     var confirm = $("#" + TextboxId);
