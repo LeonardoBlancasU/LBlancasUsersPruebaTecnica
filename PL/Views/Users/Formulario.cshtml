@@ -1,0 +1,152 @@
+﻿@model ML.Users
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Usuario</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Ingrese los datos del usuario</h5>
+            <hr />
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Formulario", "Users", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+    {
+        <div class="row">
+            <input type="hidden" name="IdUser" value="@Model.IdUser" />
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.Nombre, new { @class = "form-label", @for = "txtNombre" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-clipboard-fill" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.Nombre, new { maxlength = "50", required = "required", placeholder = "Ingresa tu Nombre", @class = "form-control", @id = "txtNombre", @onkeypress = "return ValidarSoloLetras(event, 'lblErrorNombre')" })
+                </div>
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @id = "lblErrorNombre", @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.ApellidoPaterno, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-clipboard-minus" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.ApellidoPaterno, new { maxlength = "50", required = "required", placeholder = "Ingresa tu Apellido Paterno", @class = "form-control", @id = "txtApellidoPaterno", @onkeypress = "return ValidarSoloLetras(event, 'lblErrorApellidoPaterno')" })
+                </div>
+                @Html.ValidationMessageFor(model => model.ApellidoPaterno, "", new { @id = "lblErrorApellidoPaterno", @class = "text-danger" })
+
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.ApellidoMaterno, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-clipboard-minus" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.ApellidoMaterno, new { maxlength = "50", required = "required", placeholder = "Ingresa tu Apellido Materno", @class = "form-control", @id = "txtApellidoMaterno", @onkeypress = "return ValidarSoloLetras(event, 'lblErrorApellidoMaterno')" })
+                </div>
+                @Html.ValidationMessageFor(model => model.ApellidoMaterno, "", new { @id = "lblErrorApellidoMaterno", @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row"> 
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.Email, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-envelope-at" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.Email, new { required = "required", placeholder = "Ingresa tu Correo", @class = "form-control", @id = "txtEmail", @onkeypress = "DesactivarEnter(event)", @onblur = "ValidarEmail('txtEmail', 'txtEmailConfirm', 'lblErrorEmail')" })
+                </div>
+                @Html.ValidationMessageFor(model => model.Email, "", new { @id = "lblErrorEmail", @class = "text-danger" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-envelope-at" id="spanEmailConfirm" style="display:none" disabled="disabled"></span>
+                    @Html.TextBoxFor(model => model.Email, new { required = "required", placeholder = "Confirmar Correo", @style = "display:none;", @class = "form-control", @disabled = "disabled", @id = "txtEmailConfirm", @onblur = "return ConfirmarTextbox('txtEmail', 'txtEmailConfirm', 'lblErrorEmailConfirm');", @onkeypress = "DesactivarEnter(event)" })
+                </div>
+                <span class="text-danger" id="lblErrorEmailConfirm"></span>
+                @if (ViewBag.EmailError != null)
+                {
+                    <span class="text-danger">@ViewBag.EmailError</span>
+                }
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.Password, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-asterisk" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.Password, new
+                        {
+                            required = "required",
+                            placeholder = "Ingresa una Contraseña",
+                            @class = "form-control",
+                            type = "password",
+                            @id = "txtPassword",
+                            @onkeypress = "DesactivarEnter(event)",
+                            @onblur = "ValidarPassword('txtPassword', 'lblErrorPassword', 'txtPasswordConfirm', '8')"
+
+                        })
+                    <span class="input-group-text" type="button" style="display: inline-block; vertical-align: middle" id="btnPassword" onclick="VerPassword('iconPassword','txtPassword')">
+                        <i class="bi bi-eye" id="iconPassword"></i>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => model.Password, "", new { @id = "lblErrorPassword", @class = "text-danger" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-asterisk" id="spanPasswordConfirm" style="display:none;" disabled="disabled"></span>
+                    @Html.TextBoxFor(model => model.Password, new { required = "required", placeholder = "Confirmar Contraseña", @style = "display:none;", @class = "form-control", @disabled = "disabled", type = "password", @id = "txtPasswordConfirm", @onblur = "return ConfirmarTextbox('txtPassword', 'txtPasswordConfirm', 'lblErrorPasswordConfirm');", @onkeypress = "DesactivarEnter(event)" })
+                    <button class="input-group-text" type="button" style="display:none;" disabled="disabled" id="btnPasswordConfirm" onclick="VerPassword('iconPasswordConfirm','txtPasswordConfirm')">
+                        <i class="bi bi-eye" id="iconPasswordConfirm"></i>
+                    </button>
+                </div>
+                <span class="text-danger" id="lblErrorPasswordConfirm"></span>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.FechaNacimiento, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-calendar" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.FechaNacimiento, new { required = "required", @type = "date", @class = "form-control", @onkeypress = "DesactivarEnter(event)" })
+                </div>
+                @Html.ValidationMessageFor(model => model.FechaNacimiento, "", new { @id = "lblErrorFechaNacimiento", @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.Imagen, new { @class = "form-label" }) <i class="bi bi-card-image"></i>
+                <input type="file" class="form-control" name="ImagenFile" accept="image/*" onchange="PrevisualizarYValidarImagen(event)" onkeypress="DesactivarEnter(event)" />
+                <br>
+                <img id="imgUsuario" src="@((Model.Imagen !=null)? $"data:image/*;base64,{Convert.ToBase64String(Model.Imagen)}": Url.Content("~/Img/Default.png"))"
+                     width="50" height="50" style="margin-top: 10px;" />
+                @Html.HiddenFor(model => model.Imagen)
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.Rol.IdRol, new { @id = "ddlRol", @class = "form-label" })
+                <div class="input-group mb-3 has-validation" required>
+                    <span class="input-group-text bi bi-list" id="basic-addon1"></span>
+                    @Html.DropDownListFor(model => model.Rol.IdRol,
+                             new SelectList(Model.Rol.Roles, "IdRol", "Nombre"),
+                             "-- Seleccione un Rol --",
+                             new { required = "required", @class = "form-control", @onkeypress = "DesactivarEnter(event)" })
+                </div>
+                @Html.ValidationMessageFor(model => model.Rol.IdRol, "", new { @id = "lblErrorRol", @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-12">
+                <input type="submit" value="Guardar" class="btn btn-success" id="btnGuardar" onclick="ValidarCampos()" />
+            </div>
+
+            <div class="col-12">
+                @Html.ActionLink("Regresar", "GetAll", "Usuario", new { @class = "btn btn-danger" })
+            </div>
+
+
+            @if (TempData["Actualizado"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="bi bi-send"> @TempData["Actualizado"]</i>
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/User/Validaciones.js"></script>
