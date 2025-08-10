@@ -1,0 +1,102 @@
+﻿@model ML.Locations
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string rol = Context.Session.GetString("Rol") ?? "";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Lista de Locations Registradas</h2>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Consultar, Agregar, Editar o Eliminar Locations Registradas en la Base</h5>
+            <hr />
+        </div>
+    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-all"> @TempData["Success"] </i>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-x-square"> @TempData["Error"] </i>
+
+        </div>
+    }
+    @if (TempData["Agregado"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-floppy"> @TempData["Agregado"] </i>
+
+        </div>
+    }
+    <div class="row">
+        @if (rol != "" && rol == "Administrador")
+        {
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.ActionLink("+", "Formulario", "Usuario", new { @class = "btn btn-success" })
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-12">
+                @if (Model.Locaciones != null)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <td> Editar </td>
+                                    <td> Address </td>
+                                    <td> PlaceId </td>
+                                    <td> Latitude </td>
+                                    <td> Longitude </td>
+                                    <td> Eliminar </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (ML.Locations location in Model.Locaciones)
+                                {
+                                    <tr>
+                                        <input type="hidden" name="IdLocation" value="@location.IdLocation" />
+                                        <td>
+                                            @if (rol != "" && rol == "Administrador")
+                                            {
+                                                @Html.ActionLink("Editar", "Formulario", "Locations", new { IdLocation = location.IdLocation }, new { @class = "btn btn-warning" })
+                                            }
+                                        </td>
+                                        <td>@location.address</td>
+                                        <td>@location.place_id</td>
+                                        <td>@location.latitude</td>
+                                        <td>@location.longitude</td>
+                                        <td>
+                                            @if (rol != "" && rol == "Administrador")
+                                            {
+                                                <a href="@Url.Action("Delete", "Locations", new { IdLocation = location.IdLocation })" onclick="return confirm('Estas seguro que quieres eliminar a este usuario?')">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-question-octagon">No se encontraron Locations!</i>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

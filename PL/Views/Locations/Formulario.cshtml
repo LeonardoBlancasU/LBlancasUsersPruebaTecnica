@@ -1,0 +1,80 @@
+﻿@model ML.Locations
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Location</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Ingrese los datos de la Location o señale la ubicaion en el mapa</h5>
+            <hr />
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Formulario", "Locations", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+    {
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.address, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-clipboard-minus" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.address, new { @id ="address", required = "required", placeholder = "Ingresa el Address", @class = "form-control" })
+                </div>
+                @Html.ValidationMessageFor(model => model.address, "", new { @id = "lblErrorAddress", @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.place_id, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-clipboard-minus" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.place_id, new { @id = "placeId", required = "required", placeholder = "Ingresa el Place Id", @class = "form-control" })
+                </div>
+                @Html.ValidationMessageFor(model => model.place_id, "", new { @id = "lblErrorPlaceId", @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.latitude, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-clipboard-minus" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.latitude, new { @id = "latitude", required = "required", placeholder = "Ingresa la Latitude", @class = "form-control" })
+                </div>
+                @Html.ValidationMessageFor(model => model.latitude, "", new { @id = "lblErrorLatitude", @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.LabelFor(model => model.longitude, new { @class = "form-label" })
+                <div class="input-group mb-3 has-validation">
+                    <span class="input-group-text bi bi-clipboard-minus" id="basic-addon1"></span>
+                    @Html.TextBoxFor(model => model.longitude, new { @id = "longitude", required = "required", placeholder = "Ingresa la Longitude", @class = "form-control" })
+                </div>
+                @Html.ValidationMessageFor(model => model.longitude, "", new { @id = "lblErrorLongitude", @class = "text-danger" })
+            </div>
+         </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <input type="submit" value="Guardar" class="btn btn-success" id="btnGuardar" onclick="ValidarCampos()" />
+            </div>
+
+            <div class="col-12">
+                @Html.ActionLink("Regresar", "GetAll", "Usuario", new { @class = "btn btn-danger" })
+            </div>
+
+
+            @if (TempData["Actualizado"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="bi bi-send"> @TempData["Actualizado"]</i>
+                </div>
+            }
+
+        </div>
+    }
+</div>
+<script src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.ApiKey&libraries=places&callback=initMap" async defer></script>
+<script src="~/js/Locations/Maps.js"></script>
