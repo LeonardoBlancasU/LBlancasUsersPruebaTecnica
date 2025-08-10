@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    @using (Html.BeginForm("Formulario", "Truck", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+    @using (Html.BeginForm("Formulario", "Trucks", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
     {
         <div class="row">
             <input type="hidden" name="IdTruck" value="@Model.IdTruck" />
@@ -57,7 +57,7 @@
             </div>
 
             <div class="col-12">
-                @Html.ActionLink("Regresar", "GetAll", "Usuario", new { @class = "btn btn-danger" })
+                @Html.ActionLink("Regresar", "GetAll", "Trucks", new { @class = "btn btn-danger" })
             </div>
 
 

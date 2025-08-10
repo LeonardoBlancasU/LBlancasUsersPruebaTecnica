@@ -1,66 +1,38 @@
-﻿let map, marker;
+﻿let map;
+let marker;
 
 function initMap() {
-    let defaultLocation = { lat: 19.4326, lng: -99.1332 }; // CDMX por defecto
+    // Usar coordenadas que vienen desde el modelo
+    const initialLatLng = { lat: parseFloat(initialLat), lng: parseFloat(initialLng) };
 
     map = new google.maps.Map(document.getElementById("map"), {
-        center: defaultLocation,
+        center: initialLatLng,
         zoom: 14
     });
 
     marker = new google.maps.Marker({
-        position: defaultLocation,
-        map: map
+        position: initialLatLng,
+        map: map,
+        draggable: true
     });
 
+    // Llenar inputs con valores iniciales
+    updateLatLngInputs(initialLatLng.lat, initialLatLng.lng);
+
+    // Mover pin con drag
+    marker.addListener("dragend", function () {
+        const pos = marker.getPosition();
+        updateLatLngInputs(pos.lat(), pos.lng());
+    });
+
+    // Mover pin con click en el mapa
     map.addListener("click", function (event) {
-        let lat = event.latLng.lat();
-        let lng = event.latLng.lng();
-
-        marker.setPosition({ lat, lng });
-
-        let geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ location: { lat, lng } }, function (results, status) {
-            if (status === "OK" && results[0]) {
-                let address = results[0].formatted_address;
-                let placeId = results[0].place_id;
-
-                document.getElementById("placeId").value = placeId;
-                document.getElementById("address").value = address;
-                document.getElementById("latitude").value = lat;
-                document.getElementById("longitude").value = lng;
-            }
-        });
+        marker.setPosition(event.latLng);
+        updateLatLngInputs(event.latLng.lat(), event.latLng.lng());
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("btnGuardar").addEventListener("click", function () {
-        let locationData = {
-            PlaceId: document.getElementById("placeId").value,
-            Address: document.getElementById("address").value,
-            Latitude: parseFloat(document.getElementById("latitude").value),
-            Longitude: parseFloat(document.getElementById("longitude").value)
-        };
-
-        fetch("https://localhost:5001/api/Ubicacion/Add", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(locationData)
-        })
-            .then(response => {
-                if (!response.ok) throw new Error("Error al guardar ubicación");
-                return response.json();
-            })
-            .then(data => {
-                alert("Ubicación guardada con éxito");
-                window.location.href = "/Ubicacion/GetAll";
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("Ocurrió un error al guardar");
-            });
-    });
-});
+function updateLatLngInputs(lat, lng) {
+    document.getElementById("latitude").value = lat.toFixed(6);
+    document.getElementById("longitude").value = lng.toFixed(6);
+}

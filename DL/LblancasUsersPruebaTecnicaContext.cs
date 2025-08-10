@@ -27,19 +27,13 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<UsersGetDTO> UsersGetDTO { get; set; }
-
-    public virtual DbSet<UsersGetByIdDTO> UsersGetByIdDTO { get; set; }
-    public virtual DbSet<LoginDTO> LoginDTO { get; set; }
-    public virtual DbSet<GetImagenDTO> GetImagenDTO { get; set; }
+    public virtual DbSet<GetAllOrdersDTO> GetAllOrdersDTO { get; set; }
     public virtual DbSet<GetEmailUniqueDTO> GetEmailUniqueDTO { get; set; }
-
-
-
-
-
-
-    public virtual DbSet<GetAllOrdersDTO> GetAllOrdersDTO {  get; set; }
+    public virtual DbSet<GetImagenDTO> GetImagenDTO { get; set; }
+    public virtual DbSet<LoginDTO> LoginDTO { get; set; }
+    public virtual DbSet<GetImagenDTO> UsersGetImagenDTO { get; set; }
+    public virtual DbSet<UsersGetDTO> UsersGetDTO { get; set; }
+    public virtual DbSet<UsersGetByIdDTO> UsersGetByIdDTO { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Location>(entity =>
@@ -158,10 +152,9 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Users__IdRol__2A4B4B5E");
         });
-
         modelBuilder.Entity<UsersGetDTO>(entity =>
             entity
-                .HasNoKey());
+        .HasNoKey());
 
         modelBuilder.Entity<UsersGetByIdDTO>(entity =>
             entity
@@ -170,7 +163,7 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
         modelBuilder.Entity<LoginDTO>(entity =>
            entity
                .HasNoKey());
-        
+
         modelBuilder.Entity<GetImagenDTO>(entity =>
            entity
                .HasNoKey());
@@ -179,34 +172,10 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
            entity
                .HasNoKey());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         modelBuilder.Entity<GetAllOrdersDTO>(entity =>
             entity
                 .HasNoKey()
         );
-
         OnModelCreatingPartial(modelBuilder);
     }
 

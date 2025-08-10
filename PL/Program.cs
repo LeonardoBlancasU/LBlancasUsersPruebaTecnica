@@ -22,9 +22,10 @@ var conString = builder.Configuration.GetConnectionString("LBlancasUsers");
 builder.Services.AddDbContext<LblancasUsersPruebaTecnicaContext>(options => options.UseSqlServer(conString));
 builder.Services.AddScoped<BL.Users>();
 builder.Services.AddScoped<BL.Rol>();
-
+builder.Services.AddScoped<BL.Orders>();
 builder.Services.AddScoped<BL.Trucks>();
-
+builder.Services.AddScoped<BL.Locations>();
+builder.Services.AddScoped<BL.Status>();
 
 
 var app = builder.Build();

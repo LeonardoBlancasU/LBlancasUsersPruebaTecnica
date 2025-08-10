@@ -15,7 +15,6 @@ namespace SL_WebApi.Controllers
         [Authorize]
         [HttpGet]
         [Route("GetAll")]
-
         public IActionResult GetAll()
         {
             ML.Result result = _BLLocations.GetAll();
@@ -32,7 +31,6 @@ namespace SL_WebApi.Controllers
         [Authorize]
         [HttpGet]
         [Route("GetById")]
-
         public IActionResult GetById(int IdLocation)
         {
             ML.Result result = _BLLocations.GetById(IdLocation);
@@ -49,7 +47,6 @@ namespace SL_WebApi.Controllers
         [Authorize]
         [HttpPost]
         [Route("Add")]
-
         public IActionResult Add([FromBody]ML.Locations location)
         {
             ML.Result result = _BLLocations.Add(location);
@@ -66,7 +63,6 @@ namespace SL_WebApi.Controllers
         [Authorize]
         [HttpPut]
         [Route("Update")]
-
         public IActionResult Update([FromBody] ML.Locations location)
         {
             ML.Result result = _BLLocations.Update(location);
@@ -83,7 +79,6 @@ namespace SL_WebApi.Controllers
         [Authorize]
         [HttpDelete]
         [Route("Delete")]
-
         public IActionResult Delete(int IdLocation)
         {
             ML.Result result = _BLLocations.Delete(IdLocation);

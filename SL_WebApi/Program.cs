@@ -3,9 +3,21 @@ using DL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+var CORS = "_CORS";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CORS,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5248", "http://localhost:5242")
+                  .WithMethods("PUT", "DELETE", "GET", "POST")
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+});
 builder.Services
     .AddHttpContextAccessor()
     .AddAuthorization()
@@ -46,10 +58,11 @@ builder.Services.AddSession(options =>
 
 var conString = builder.Configuration.GetConnectionString("LBlancasUsers");
 builder.Services.AddDbContext<LblancasUsersPruebaTecnicaContext>(options => options.UseSqlServer(conString));
-
-builder.Services.AddScoped<BL.Trucks>();
 builder.Services.AddScoped<BL.Users>();
 builder.Services.AddScoped<BL.Rol>();
+builder.Services.AddScoped<BL.Orders>();
+builder.Services.AddScoped<BL.Trucks>();
+builder.Services.AddScoped<BL.Locations>();
 
 
 
@@ -64,11 +77,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseSession();
+app.UseCors(CORS);
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 
 app.MapControllers();
 

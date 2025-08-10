@@ -142,6 +142,13 @@ namespace BL
                 var query = _context.Locations.FromSqlRaw("LocationGetById @IdLocation", idLocation).AsEnumerable().SingleOrDefault();
                 if (query != null)
                 {
+                    ML.Locations location = new ML.Locations();
+                    location.IdLocation = query.IdLocation;
+                    location.address = query.Address;
+                    location.place_id = query.PlaceId;
+                    location.latitude = query.Latitude;
+                    location.longitude = query.Longitude;
+                    result.Object = location;
                     result.Correct = true;
                 }
                 else
