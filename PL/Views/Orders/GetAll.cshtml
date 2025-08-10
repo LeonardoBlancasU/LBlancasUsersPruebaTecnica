@@ -1,0 +1,135 @@
+﻿@model ML.Orders
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string rol = Context.Session.GetString("Rol") ?? "";
+}
+<style>
+    @@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Lista de Usuarios Registrados</h2>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Consultar, Agregar, Editar o Eliminar Usuarios Registrados en la Base</h5>
+            <hr />
+        </div>
+    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-all"> @TempData["Success"] </i>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-x-square"> @TempData["Error"] </i>
+
+        </div>
+    }
+    @if (TempData["Agregado"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-floppy"> @TempData["Agregado"] </i>
+
+        </div>
+    }
+    <div class="row">
+        @if (rol != "" && rol == "Administrador")
+        {
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                @Html.ActionLink("+", "Formulario", "Orders", new { @class = "btn btn-success" })
+            </div>
+        }
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <a class="btn btn-primary" type="button" data-bs-toggle="collapse" href="#formBusquedaAbierta" role="button" aria-expanded="false" aria-controls="formBusquedaAbierta">
+                Busqueda Abierta
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-12">
+                @if (Model.Usuarios != null)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <td> Status </td>
+                                    <td> Editar </td>
+                                    <td> Nombre Completo del Cliente </td>
+                                    <td> Informacion de la Truck </td>
+                                    <td> Direccion de Recoleccion </td>
+                                    <td> Direccion de Entrega </td>
+                                    <td> Eliminar </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (ML.Orders order in Model.Ordenes)
+                                {
+                                    <tr>
+                                        <input type="hidden" name="IdOrder" value="@order.IdOrder" />
+                                        <td>
+                                            @if (rol != "" && rol == "Administrador")
+                                            {
+                                                <span name="lblStatus" id="lblStatus_@order.IdOrder">@order.IdOrder</span>
+                                                @Html.DropDownListFor(model => model.Status.IdStatus,
+                                                         new SelectList(Model.Status.Statues, "IdStatus", "Nombre"),
+                                                         "-- Seleccione un Status --",
+                                                         new { @id ="ddlStatus", IdOrder =order.IdOrder , required = "required", @class = "form-control", @onchange = "UpdateStatus(IdOrder)" })
+                                            }
+                                            else
+                                            {
+                                                @order.Status.Nombre
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (rol != "" && rol == "Administrador")
+                                            {
+                                                @Html.ActionLink("Editar", "Formulario", "Orders", new { IdOrder = order.IdOrder }, new { @class = "btn btn-warning" })
+                                            }
+                                        </td>
+
+                                        <td>@order.User.Nombre @order.User.ApellidoPaterno @order.User.ApellidoMaterno</td>
+                                        <td>@order.Truck.Year @order.Truck.Color @order.Truck.Plates</td>
+                                        <td>
+                                            @order.LocationPick.address @order.LocationPick.place_id @order.LocationPick.latitude @order.LocationPick.longitude
+                                        </td>
+                                        <td>@order.LocationDrop.address @order.LocationDrop.place_id @order.LocationDrop.latitude @order.LocationDrop.longitude </td>
+                                        
+                                        <td>
+                                            @if (rol != "" && rol == "Administrador")
+                                            {
+                                                <a href="@Url.Action("Delete", "Orders", new { IdOrder = order.IdOrder })" onclick="return confirm('Estas seguro que quieres eliminar esta order?')">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-question-octagon">No se encontraron Orders!</i>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    var urlUpdateStatus = '@ViewBag.UpdateStatus';
+</script>
+<script src="~/">
+</script>

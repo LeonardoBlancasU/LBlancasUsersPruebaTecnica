@@ -34,6 +34,12 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
     public virtual DbSet<GetImagenDTO> GetImagenDTO { get; set; }
     public virtual DbSet<GetEmailUniqueDTO> GetEmailUniqueDTO { get; set; }
 
+
+
+
+
+
+    public virtual DbSet<GetAllOrdersDTO> GetAllOrdersDTO {  get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Location>(entity =>
@@ -172,6 +178,34 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
         modelBuilder.Entity<GetEmailUniqueDTO>(entity =>
            entity
                .HasNoKey());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        modelBuilder.Entity<GetAllOrdersDTO>(entity =>
+            entity
+                .HasNoKey()
+        );
 
         OnModelCreatingPartial(modelBuilder);
     }
