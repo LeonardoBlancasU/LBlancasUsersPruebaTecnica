@@ -87,7 +87,7 @@ namespace SL_WebApi.Controllers
                 return BadRequest(result);
             }
         }
-        [HttpDelete]
+        [HttpPut]
         [Route("UpdateStatus")]
         public IActionResult UpdateStatus(int IdOrder, int IdStatus)
         {

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PL.Controllers
 {
-    public class TruckController : Controller
+    public class TrucksController : Controller
     {
         private readonly IConfiguration _configuration;
 
-        public TruckController(IConfiguration configuration)
+        public TrucksController(IConfiguration configuration)
         {
             _configuration = configuration;
         }

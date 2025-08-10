@@ -9,13 +9,13 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <h2>Lista de Usuarios Registrados</h2>
+            <h2>Lista de Orders Registradas</h2>
         </div>
     </div>
     <br />
     <div class="row">
         <div class="col-sm-12">
-            <h5>Consultar, Agregar, Editar o Eliminar Usuarios Registrados en la Base</h5>
+            <h5>Consultar, Agregar, Editar o Eliminar Orders Registradas en la Base</h5>
             <hr />
         </div>
     </div>
@@ -46,16 +46,11 @@
                 @Html.ActionLink("+", "Formulario", "Orders", new { @class = "btn btn-success" })
             </div>
         }
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
-            <a class="btn btn-primary" type="button" data-bs-toggle="collapse" href="#formBusquedaAbierta" role="button" aria-expanded="false" aria-controls="formBusquedaAbierta">
-                Busqueda Abierta
-            </a>
-        </div>
     </div>
     <div class="row">
         <div class="row">
             <div class="col-12">
-                @if (Model.Usuarios != null)
+                @if (Model.Ordenes != null)
                 {
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -78,11 +73,12 @@
                                         <td>
                                             @if (rol != "" && rol == "Administrador")
                                             {
-                                                <span name="lblStatus" id="lblStatus_@order.IdOrder">@order.IdOrder</span>
-                                                @Html.DropDownListFor(model => model.Status.IdStatus,
+                                                @Html.DropDownListFor(model => order.Status.IdStatus,
                                                          new SelectList(Model.Status.Statues, "IdStatus", "Nombre"),
                                                          "-- Seleccione un Status --",
-                                                         new { @id ="ddlStatus", IdOrder =order.IdOrder , required = "required", @class = "form-control", @onchange = "UpdateStatus(IdOrder)" })
+                                                         new { @id =$"ddlStatus_{order.IdOrder}", data_IdOrder = order.IdOrder , required = "required", @class = "form-control", @onchange = "UpdateStatus(this)" })
+                                                <br />
+                                                         <span style="display: inline-block; max-width: 100%; max-height:40%" name="lblStatus" id="lblStatus_@order.IdOrder"></span>
                                             }
                                             else
                                             {
@@ -131,5 +127,5 @@
 <script>
     var urlUpdateStatus = '@ViewBag.UpdateStatus';
 </script>
-<script src="~/">
+<script src="~/js/Orders/DDL.js">
 </script>

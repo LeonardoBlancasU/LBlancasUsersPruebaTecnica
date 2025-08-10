@@ -30,28 +30,28 @@ namespace BL
                     foreach(var item in query)
                     {
                         ML.Orders orders = new ML.Orders();
-                        orders.IdOrder = item.IdOrders;
-                        //orders.User = new ML.User();
-                        //orders.User.Nombre = item.Nombre;
-                        //orders.User.ApellidoPaterno = item.ApellidoPaterno;
-                        //orders.User.ApellidoMaterno = item.ApellidoMaterno;
-                        //orders.Truck = new ML.Truck();
-                        //orders.Truck.Year = item.Year;
-                        //orders.Truck.Color = item.Color;
-                        //orders.Truck.Plates = item.Plates;
+                        orders.IdOrder = item.IdOrder;
+                        orders.User = new ML.Users();
+                        orders.User.Nombre = item.Nombre;
+                        orders.User.ApellidoPaterno = item.ApellidoPaterno;
+                        orders.User.ApellidoMaterno = item.ApellidoMaterno;
+                        orders.Truck = new ML.Trucks();
+                        orders.Truck.Year = item.Year;
+                        orders.Truck.Color = item.Color;
+                        orders.Truck.Plates = item.Plates;
                         orders.Status = new ML.Status();
                         orders.Status.IdStatus = item.IdStatus;
                         orders.Status.Nombre = item.NombreStatus;
-                        //order.LocationPick = new ML.Location();
-                        //order.LocationPick.address = item.AddressPick;
-                        //order.LocationPick.place_id = item.PlaceIdPick;
-                        //order.LocationPick.latitude = item.LatitudePick;
-                        //order.LocationPick.longitude = item.LongitudePick;
-                        //order.LocationDrop = new ML.Location();
-                        //order.LocationDrop.address = item.AddressDrop;
-                        //order.LocationDrop.place_id = item.PlaceIdDrop;
-                        //order.LocationDrop.laitude = item.LatitudeDrop;
-                        //order.LocationDrop.longitude = item.LongitudeDrop;
+                        orders.LocationPick = new ML.Locations();
+                        orders.LocationPick.address = item.AddressPick;
+                        orders.LocationPick.place_id = item.PlaceIdPick;
+                        orders.LocationPick.latitude = item.LatitudePick;
+                        orders.LocationPick.longitude = item.LongitudePick;
+                        orders.LocationDrop = new ML.Locations();
+                        orders.LocationDrop.address = item.AddressDrop;
+                        orders.LocationDrop.place_id = item.PlaceIdDrop;
+                        orders.LocationDrop.latitude = item.LatitudeDrop;
+                        orders.LocationDrop.longitude = item.LongitudeDrop;
                         result.Objects.Add(orders);
                     }
                     result.Correct = true;
@@ -169,15 +169,16 @@ namespace BL
                 {
                     ML.Orders order = new ML.Orders();
                     order.IdOrder = query.IdOrder;
-                    //order.User = new ML.User();
-                    //order.User.IdUser = query.IdUser;
-                    //order.Truck = new ML.Truck();
-                    //order.Truck.IdTruck = query.IdTruck;
-                    //order.Status.IdStatus = query.IdStatus;
-                    //order.LocationPick = new ML.Location();
-                    //order.LocationPick.IdLocation = query.IdPickUp;
-                    //order.LocationDrop = new ML.Location();
-                    //order.LocationDrop.IdLocation = query.IdDropOff;
+                    order.User = new ML.Users();
+                    order.User.IdUser = query.IdUser;
+                    order.Truck = new ML.Trucks();
+                    order.Truck.IdTruck = query.IdTruck;
+                    order.Status = new ML.Status();
+                    order.Status.IdStatus = query.IdStatus;
+                    order.LocationPick = new ML.Locations();
+                    order.LocationPick.IdLocation = query.IdPickUp;
+                    order.LocationDrop = new ML.Locations();
+                    order.LocationDrop.IdLocation = query.IdDropOff;
                     result.Object = order;
                     result.Correct = true;
                 }
@@ -202,7 +203,7 @@ namespace BL
             {
                 var idOrder = new SqlParameter("@IdOrder", IdOrder);
                 var idStatus = new SqlParameter("@IdStatus", IdStatus);
-                var query = _context.Database.ExecuteSqlRaw("OrdersUpdateStatus @IdOrder, @IdStatus", idOrder, idStatus);
+                var query = _context.Database.ExecuteSqlRaw("OrderUpdateStatus @IdOrder, @IdStatus", idOrder, idStatus);
                 if (query > 0)
                 {
                     result.Correct = true;

@@ -59,7 +59,7 @@ namespace BL
                 var year = new SqlParameter("@Year", truck.Year);
                 var color = new SqlParameter("@Color", truck.Color);
                 var plates = new SqlParameter("@Plates", truck.Plates);
-                var query = _context.Database.ExecuteSqlRaw("TruckUpdate @Year, @Color, @Plates", year, color, plates);
+                var query = _context.Database.ExecuteSqlRaw("TruckAdd @Year, @Color, @Plates", year, color, plates);
                 if (query > 0)
                 {
                     result.Correct = true;

@@ -28,13 +28,19 @@ namespace PL.Controllers
             ViewBag.ApiKey = _configuration["ApiKey:AppSettings"];
             ML.Locations location = new ML.Locations();
             ML.Result result = new ML.Result();
-            if(IdLocation != null && IdLocation > 0)
+            if (IdLocation != null && IdLocation > 0)
             {
                 result = GetByIdREST(IdLocation.Value);
-                if(result.Correct)
+                if (result.Correct)
                 {
-                    location = (ML.Locations)result.Object;    
+                    location = (ML.Locations)result.Object;
                 }
+            }
+            else
+            {
+                location.latitude = 19.4326; //Defecto
+                location.longitude = -99.1332; //Defecto
+
             }
             return View(location);
         }
@@ -171,11 +177,13 @@ namespace PL.Controllers
         {
             ML.Result result = new ML.Result();
             string url = _configuration["AppSettings:Url"] ?? "";
+            string token = HttpContext.Session.GetString("TokenJWT") ?? "";
             try
             {
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                     var postTask = client.PutAsJsonAsync<ML.Locations>("Locations/Update", location);
                     postTask.Wait();
 
