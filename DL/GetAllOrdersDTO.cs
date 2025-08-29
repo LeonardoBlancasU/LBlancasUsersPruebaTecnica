@@ -21,9 +21,9 @@ namespace DL
         public string AddressDrop { get; set; }
         public string PlaceIdPick { get; set; }
         public string PlaceIdDrop { get; set; }
-        public double LatitudePick { get; set; }
-        public double LatitudeDrop { get; set; }
-        public double LongitudePick { get; set; }
-        public double LongitudeDrop { get; set; }
+        public decimal LatitudePick { get; set; }
+        public decimal LatitudeDrop { get; set; }
+        public decimal LongitudePick { get; set; }
+        public decimal LongitudeDrop { get; set; }
     }
 }

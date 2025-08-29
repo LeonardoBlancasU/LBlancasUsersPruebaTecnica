@@ -8,7 +8,5 @@
 
         public bool Correct { get; set; }
         public List<object>? Objects { get; set; }
-        public bool Correct { get; set; }
-        public Exception? Ex { get; set; }
     }
 }

@@ -11,8 +11,8 @@ namespace ML
         public int IdLocation { get; set; }
         public string? address { get; set; }
         public string? place_id { get; set; }
-        public double? latitude { get; set; }
-        public double? longitude { get; set; }
+        public decimal? latitude { get; set; }
+        public decimal? longitude { get; set; }
         public List<object>? Locaciones { get; set; }
     }
 }

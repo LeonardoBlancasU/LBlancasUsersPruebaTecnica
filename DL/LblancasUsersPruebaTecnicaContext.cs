@@ -34,16 +34,7 @@ public partial class LblancasUsersPruebaTecnicaContext : DbContext
     public virtual DbSet<GetImagenDTO> UsersGetImagenDTO { get; set; }
     public virtual DbSet<UsersGetDTO> UsersGetDTO { get; set; }
     public virtual DbSet<UsersGetByIdDTO> UsersGetByIdDTO { get; set; }
-    public virtual DbSet<LoginDTO> LoginDTO { get; set; }
-    public virtual DbSet<GetImagenDTO> GetImagenDTO { get; set; }
-    public virtual DbSet<GetEmailUniqueDTO> GetEmailUniqueDTO { get; set; }
 
-
-
-
-
-
-    public virtual DbSet<GetAllOrdersDTO> GetAllOrdersDTO {  get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Location>(entity =>

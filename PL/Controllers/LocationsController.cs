@@ -38,8 +38,8 @@ namespace PL.Controllers
             }
             else
             {
-                location.latitude = 19.4326; //Defecto
-                location.longitude = -99.1332; //Defecto
+                location.latitude = Convert.ToDecimal(19.4326); //Defecto
+                location.longitude = Convert.ToDecimal(-99.1332); //Defecto
 
             }
             return View(location);
